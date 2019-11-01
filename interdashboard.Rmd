@@ -1,0 +1,79 @@
+title: "Interdashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(viridis)
+library(plotly)
+library(p8105.datasets)
+library(flexdashboard)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+data("rest_inspec")
+
+korean_restaurant_violin=rest_inspec%>%
+  filter(boro %in% c("MANHATTAN"))%>% 
+  select(street, score)%>%
+  group_by(street) %>% 
+  drop_na()%>%
+  plot_ly(
+    x= ~ street, y=~ score, type = "violin"
+  )
+
+ korean_restaurant_violin 
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+ korean_restaurant=rest_inspec%>%
+  filter(boro %in% c("MANHATTAN"))%>% 
+  group_by(street) %>% 
+  summarise(mean_score = mean(score)) %>% 
+  drop_na()%>%
+   mutate(street = fct_reorder(street, mean_score)) %>% 
+  plot_ly(
+    x = ~street, y = ~mean_score, color = ~street, type = "scatter") 
+
+korean_restaurant
+
+```
+
+### Chart C
+
+```{r}
+manhattan_cafe=
+rest_inspec %>% 
+  filter(str_detect(dba, "[Cc][Aa][Ff][Ee]"),
+         boro %in% c("MANHATTAN")) %>%
+  group_by(grade)%>%
+  summarize(n = n()) %>% 
+  drop_na()%>%
+  spread(key = grade, value = n)%>%
+  pivot_longer(
+    A:Z,
+    names_to = "grade",
+    values_to = "number"
+  )%>%
+  mutate(grade= fct_reorder(grade, number))%>%
+  plot_ly(
+    x=~grade, y= ~ number, type="bar"
+  )
+
+manhattan_cafe
+
+```
