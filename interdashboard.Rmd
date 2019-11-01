@@ -1,3 +1,4 @@
+---
 title: "Interdashboard"
 output: 
   flexdashboard::flex_dashboard:
@@ -17,18 +18,16 @@ Column {data-width=650}
 -----------------------------------------------------------------------
 
 ### Chart A
-
+This is the violin chart shows the distribution of grade of korean restaurant in Manhattan area
 ```{r}
 data("rest_inspec")
 
 korean_restaurant_violin=rest_inspec%>%
-  filter(boro %in% c("MANHATTAN"))%>% 
-  select(street, score)%>%
-  group_by(street) %>% 
-  drop_na()%>%
-  plot_ly(
-    x= ~ street, y=~ score, type = "violin"
-  )
+   filter(str_detect(cuisine_description, "[Kk][Oo][Rr][Ee][Aa][Nn]"),
+         boro %in% c("MANHATTAN"))%>% 
+  mutate(grade = fct_relevel(as.character(grade))) %>% 
+  plot_ly(x = ~grade, y = ~score, type ="violin", color=~grade, alpha=0.5)
+  
 
  korean_restaurant_violin 
 ```
@@ -38,10 +37,13 @@ Column {data-width=350}
 
 ### Chart B
 
+This is the scatterplot shows the mean score for korean restaurant by street, helping us to find the best street to explore korean food!
+
 ```{r}
 
  korean_restaurant=rest_inspec%>%
-  filter(boro %in% c("MANHATTAN"))%>% 
+  filter(str_detect(cuisine_description, "[Kk][Oo][Rr][Ee][Aa][Nn]"),
+         boro %in% c("MANHATTAN"))%>% 
   group_by(street) %>% 
   summarise(mean_score = mean(score)) %>% 
   drop_na()%>%
@@ -54,7 +56,7 @@ korean_restaurant
 ```
 
 ### Chart C
-
+This is the bar chart showing the grade for Manhattan cafe, good to see A level is the highest proportion level!
 ```{r}
 manhattan_cafe=
 rest_inspec %>% 
@@ -71,7 +73,7 @@ rest_inspec %>%
   )%>%
   mutate(grade= fct_reorder(grade, number))%>%
   plot_ly(
-    x=~grade, y= ~ number, type="bar"
+    x=~grade, y= ~ number, color= ~ grade, type="bar"
   )
 
 manhattan_cafe
