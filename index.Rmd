@@ -23,9 +23,9 @@ You can access my Linkedin Profile from this link:
 
 # My Resume
 
-You can learn more about me through my [resume](resume.html)
+You can learn more about me through my [resume](Resume.html)
 
 # Interactive dashboard
 
-my interactive dashboard can be access through [here](interdashboard.html)
+my interactive dashboard can be access through [interdashboard](interdashboard.html)
 

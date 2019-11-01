@@ -3,8 +3,6 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Yuqing"
-      href: Yuqing.html
     - text: "Resume"
       href: Resume.html
     - text: "interdashboard"
